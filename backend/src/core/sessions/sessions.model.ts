@@ -1,0 +1,13 @@
+import { integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { usersTable } from '../models';
+
+export const sessionsTable = pgTable('sessions', {
+    id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
+    title: text('title').notNull(),
+    user_id: integer('user_id').notNull().references(() => usersTable.id),
+    deleted_at: timestamp('deleted_at', { withTimezone: true, mode: 'date' }),
+    created_at: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+    updated_at: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+});
+
+export type SessionModel = typeof sessionsTable.$inferSelect;
