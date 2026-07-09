@@ -1,75 +1,119 @@
-# React + TypeScript + Vite
+# Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+The frontend is a Vite + React + TypeScript single-page application for authentication, dashboard navigation, and chat experiences. It is designed to work with the NestJS backend and currently focuses on login, registration, session browsing, and chat interactions.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech stack
 
-## React Compiler
+- React 19 and TypeScript
+- Vite for development and builds
+- TanStack Query for server-state management
+- Zustand for persisted auth state
+- React Router for navigation
+- Tailwind CSS and shadcn-style UI primitives
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Folder structure
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```text
+src/
+  components/      Reusable UI components
+  hooks/           Shared hooks
+  layouts/         Layout wrappers
+  lib/             Utility modules, query client, JWT helpers
+  pages/           Route-based page modules and feature hooks
+  router.tsx       Route configuration
+  schemas.ts       Zod schemas for API data
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Prerequisites
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Node.js 20+
+- pnpm
+- A running backend instance
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Installation
 
+```bash
+cd frontend
+pnpm install
 ```
+
+## Environment variables
+
+The frontend currently expects a single environment variable:
+
+| Variable     | Required | Notes                                  |
+| ------------ | -------- | -------------------------------------- |
+| VITE_API_URL | Yes      | Base URL used for backend API requests |
+
+Example:
+
+```env
+VITE_API_URL=http://localhost:5173
+```
+
+## Running locally
+
+```bash
+cd frontend
+pnpm dev
+```
+
+The Vite dev server typically runs on http://localhost:5173.
+
+## Build commands
+
+```bash
+pnpm build
+pnpm lint
+pnpm preview
+```
+
+## Routing
+
+Routing is defined in [src/router.tsx](./src/router.tsx) and uses React Router. The current routes are:
+
+- /login
+- /register
+- /chat
+- /
+
+The root route redirects into the chat experience.
+
+## State management
+
+- Zustand powers the persisted authentication store in [src/pages/dashboard/hooks/useAuthStore.ts](./src/pages/dashboard/hooks/useAuthStore.ts).
+- TanStack Query is used for async server-state flows such as login, session loading, and refresh handling.
+
+## UI libraries
+
+The UI layer uses a Tailwind-based setup with components and utilities from the following libraries:
+
+- Tailwind CSS
+- lucide-react
+- radix-ui
+- react-markdown and remark-gfm for message rendering
+- react-syntax-highlighter for code blocks
+
+## API integration
+
+The frontend currently performs API requests directly from feature hooks and page-level logic. The main flows are:
+
+- auth login and registration
+- session creation and retrieval
+- chat message submission
+- API key submission for LLM providers
+
+A centralized API client file exists in [src/api.ts](./src/api.ts), but the current implementation still relies on direct fetch calls in feature hooks in several places.
+
+## Project conventions
+
+- Feature folders are organized by page and route under [src/pages](./src/pages).
+- Shared validation uses Zod schemas from [src/schemas.ts](./src/schemas.ts).
+- UI components are separated from page logic and hooks.
+- Path aliases are used throughout the project.
+
+## Deployment notes
+
+No dedicated deployment configuration is included in the repository yet. The current build output is the standard Vite production bundle.
