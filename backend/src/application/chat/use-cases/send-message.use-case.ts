@@ -1,16 +1,17 @@
-import { Session } from "@/core/entities";
-import { Message } from "@/core/messages/messages.entity";
-import { MessagesRepository } from "@/core/messages/messages.repository";
-import { SessionsRepository } from "@/core/sessions/sessions.repository";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Core } from "@/core";
 
 @Injectable()
 export class SendMessageUseCase {
     constructor(
-        private readonly sessionsRepository: SessionsRepository,
-        private readonly messagesRepository: MessagesRepository
+        @Inject(Core.Sessions.SESSIONS_REPOSITORY) private readonly sessionsRepository: Core.Sessions.ISessionsRepository,
+        @Inject(Core.Messages.MESSAGES_REPOSITORY) private readonly messagesRepository: Core.Messages.IMessagesRepository,
     ) { }
-    async execute(sessionId: Session['id'], role: Message['role'], content: Message['content']): Promise<Message> {
+    async execute(
+        sessionId: Core.Sessions.Session['id'],
+        role: Core.Messages.Message['role'],
+        content: Core.Messages.Message['content']
+    ): Promise<Core.Messages.Message> {
 
         const session = await this.sessionsRepository.findById(sessionId);
 

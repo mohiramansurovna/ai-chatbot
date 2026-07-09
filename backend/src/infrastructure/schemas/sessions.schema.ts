@@ -1,5 +1,5 @@
-import { integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
-import { usersTable } from '../models';
+import { integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { usersTable } from './users.schema';
 
 export const sessionsTable = pgTable('sessions', {
     id: integer('id').generatedAlwaysAsIdentity().primaryKey(),

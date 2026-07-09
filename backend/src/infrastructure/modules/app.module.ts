@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigModule as NestConfigModule } from '@nestjs/config';
 import { validate } from '../../shared/configs/env.config';
 import { DatabaseModule } from './database.module';
 import { AuthModule } from './auth.module';
@@ -12,7 +12,7 @@ import { EmbeddingsModule } from './embeddings.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
+    NestConfigModule.forRoot({
       validate,
       validationOptions: {
         abortEarly: true
@@ -25,7 +25,8 @@ import { EmbeddingsModule } from './embeddings.module';
     ApiKeysModule,
     SessionsModule,
     LlmModule,
-    EmbeddingsModule
+    EmbeddingsModule,
+    ConfigModule
   ]
 })
 export class AppModule { }

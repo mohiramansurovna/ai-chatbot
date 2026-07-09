@@ -1,8 +1,8 @@
-import { User } from "./users.entity";
-import { UserModel } from "./users.model";
+import { Core } from '@/core';
+import { Schemas } from '../schemas';
 
 export class UsersMapper {
-    static toModel(entity: User): UserModel {
+    static toModel(entity: Core.Users.User): Schemas.UserModel {
         return {
             id: entity.id,
             name: entity.name,
@@ -14,8 +14,8 @@ export class UsersMapper {
         }
     }
 
-    static toDomain(model: UserModel): User {
-        return new User({
+    static toDomain(model: Schemas.UserModel): Core.Users.User {
+        return new Core.Users.User({
             id: model.id,
             name: model.name,
             email: model.email,

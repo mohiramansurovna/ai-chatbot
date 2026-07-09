@@ -1,12 +1,13 @@
 import { EnvConfig } from "../configs/env.config";
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
 import { IS_PUBLIC_KEY } from "@/shared/decorators/public.decorator"
 import { TokenPayload } from "@/application/auth/types";
 import { User } from "@/core/entities";
-import { UsersRepository } from "@/core/users/users.repository";
+import { USERS_REPOSITORY } from "@/core/users/users.repository";
+import type { UsersRepository } from "@/core/users/users.repository";
 import { Jose } from "../libs/jose";
 
 @Injectable()
@@ -15,7 +16,7 @@ export class AuthGuard implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
         private readonly configService: ConfigService<EnvConfig, true>,
-        private readonly usersRepository: UsersRepository
+        @Inject(USERS_REPOSITORY) private readonly usersRepository: UsersRepository
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {

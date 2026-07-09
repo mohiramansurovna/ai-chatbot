@@ -1,25 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
 import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { type Tx } from './unit-of-work';
-import { Shared } from '@/shared';
-import * as Models from '@/core/models';
+import { Core } from '@/core';
+import { Schemas } from '../schemas';
 
 @Injectable()
 export class DatabaseService {
-  public db: NodePgDatabase<typeof Models>;
+  public db: NodePgDatabase<typeof Schemas>;
 
-  constructor(private readonly configService: ConfigService<Shared.Configs.EnvConfig, true>) {
-    const host = configService.get('DB_HOST', { infer: true });
-    const port = configService.get('DB_PORT', { infer: true });
-    const name = configService.get('DB_NAME', { infer: true });
-    const user = configService.get('DB_USER', { infer: true });
-    const password = configService.get('DB_PASSWORD', { infer: true });
-
+  constructor(
+    @Inject(Core.Shared.DATABASE_CONFIG) private readonly databaseConfig: Core.Shared.IDatabaseConfig
+  ) {
+    const { user, password, port, host } = this.databaseConfig;
     const connectionString = `postgresql://${user}:${password}@${host}:${port}/${name}?schema=public`;
 
     const dbClient = drizzle(connectionString, {
-      schema:Models
+      schema: Schemas
     });
 
     this.db = dbClient;

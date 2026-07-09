@@ -1,21 +1,16 @@
-import { Injectable, NotFoundException } from "@nestjs/common"
+import { Inject, Injectable, NotFoundException } from "@nestjs/common"
 import { SendMessageUseCase } from "./send-message.use-case"
 import { LlmRegistry } from "@/core/llm/llm.registry"
-import { Session, User } from "@/core/entities"
 import { ApiKeysRepository } from "@/core/api-keys/api-keys.repository"
 import { LlmProviderName } from "@/core/llm/llm.types"
-import { ConfigService } from "@nestjs/config"
-import { EnvConfig } from "@/shared/configs/env.config"
 import { Jose } from "@/shared/libs/jose"
-import { MessagesRepository } from "@/core/messages/messages.repository"
-import { Message } from "@/core/messages/messages.entity"
-import { EmbeddingsRepository } from "@/core/embeddings/embeddings.repository"
 import { EmbeddingsService } from "@/infrastructure/ollama/embeddings.service"
+import { Core } from "@/core"
 
 type ChatUseCaseArgs = {
-    sessionId: Session['id'];
+    sessionId: Core.Sessions.Session['id'];
     content: string;
-    userId: User['id'];
+    userId: Core.Users.User['id'];
     provider: LlmProviderName;
 }
 
@@ -25,13 +20,13 @@ export class ChatUseCase {
         private readonly sendMessage: SendMessageUseCase,
         private readonly llmRegistry: LlmRegistry,
         private readonly apiKeysRepository: ApiKeysRepository,
-        private readonly messagesRepository: MessagesRepository,
-        private readonly configService: ConfigService<EnvConfig, true>,
+        @Inject(Core.Messages.MESSAGES_REPOSITORY) private readonly messagesRepository: Core.Messages.IMessagesRepository,
+        @Inject(Core.Shared.LLM_CONFIG) private readonly llmConfig: Core.Shared.ILLMConfig,
         private readonly embeddingsService: EmbeddingsService,
-        private readonly embeddingsRepository: EmbeddingsRepository,
+        @Inject(Core.Embeddings.EMBEDDINGS_REPOSITORY) private readonly embeddingsRepository: Core.Embeddings.IEmbeddingsRepository,
     ) { }
 
-    async execute(args: ChatUseCaseArgs): Promise<Message> {
+    async execute(args: ChatUseCaseArgs): Promise<Core.Messages.Message> {
         const { sessionId, userId, content, provider } = args
 
         await this.sendMessage.execute(sessionId, 'user', content)
@@ -41,8 +36,7 @@ export class ChatUseCase {
 
         const llm = this.llmRegistry.resolve(apiKey.provider);
 
-        const secret = this.configService.get('LLM_SECRET', { infer: true })
-        const decryptedKey = await Jose.decrypt(apiKey.encryptedKey, { secret })
+        const decryptedKey = await Jose.decrypt(apiKey.encryptedKey, { secret: this.llmConfig.secret })
 
         llm.configure(decryptedKey);
 
@@ -50,11 +44,11 @@ export class ChatUseCase {
         const embeddedQuery = await this.embeddingsService.embed(content);
 
         const nearestEmbeddings = await this.embeddingsRepository.findNearest(userId, embeddedQuery);
-        const memoryFacts = JSON.stringify(nearestEmbeddings.map(embedding => { 
-            return { 
-                content: embedding.content, 
+        const memoryFacts = JSON.stringify(nearestEmbeddings.map(embedding => {
+            return {
+                content: embedding.content,
                 similarity: embedding.similarity
-            } 
+            }
         }));
 
         const assistantText = await llm.send(messages, memoryFacts)

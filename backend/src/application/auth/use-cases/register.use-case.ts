@@ -1,12 +1,11 @@
-import { User } from "@/core/entities";
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { Hasher } from "@/shared/utils";
-import { UsersRepository } from "@/core/users/users.repository";
+import {Core} from "@/core"
 
 @Injectable()
 export class RegisterUseCase {
-    constructor(private readonly usersRepository: UsersRepository) { }
-    async execute(name: User['name'], email: User['email'], password: string): Promise<void> {
+    constructor(@Inject(Core.Users.USERS_REPOSITORY) private readonly usersRepository: Core.Users.IUsersRepository) { }
+    async execute(name: Core.Users.User['name'], email: Core.Users.User['email'], password: string): Promise<void> {
         const passwordHash = await Hasher.hash(password)
 
         await this.usersRepository.create({ name, email, passwordHash });

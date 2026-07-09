@@ -1,8 +1,8 @@
-import { Session } from "./sessions.entity"
-import { SessionModel } from "./sessions.model"
+import { Core } from '@/core'
+import { Schemas } from '../schemas'
 
 export class SessionsMapper {
-    static toModel(entity: Session): SessionModel {
+    static toModel(entity: Core.Sessions.Session): Schemas.SessionModel {
         return {
             id: entity.id,
             title: entity.title,
@@ -13,8 +13,8 @@ export class SessionsMapper {
         }
     }
 
-    static toDomain(model: SessionModel): Session {
-        return new Session({
+    static toDomain(model: Schemas.SessionModel): Core.Sessions.Session {
+        return new Core.Sessions.Session({
             id: model.id,
             title: model.title,
             userId: model.user_id,

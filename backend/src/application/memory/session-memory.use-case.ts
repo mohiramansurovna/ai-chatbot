@@ -1,13 +1,9 @@
 import { ApiKeysRepository } from "@/core/api-keys/api-keys.repository";
-import { EmbeddingsRepository } from "@/core/embeddings/embeddings.repository";
-import { Session, User } from "@/core/entities";
+import { Core } from "@/core";
 import { LlmRegistry } from "@/core/llm/llm.registry";
-import { MessagesRepository } from "@/core/messages/messages.repository";
 import { EmbeddingsService } from "@/infrastructure/ollama/embeddings.service";
-import { EnvConfig } from "@/shared/configs/env.config";
 import { Jose } from "@/shared/libs/jose";
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 
 export type ExtractedFacts = {
     "old_facts": number[],
@@ -18,23 +14,22 @@ export type ExtractedFacts = {
 @Injectable()
 export class SessionMemoryUseCase {
     constructor(
-        private readonly messagesRepository: MessagesRepository,
-        private readonly embeddingsRepository: EmbeddingsRepository,
+        @Inject(Core.Messages.MESSAGES_REPOSITORY) private readonly messagesRepository: Core.Messages.IMessagesRepository,
+        @Inject(Core.Embeddings.EMBEDDINGS_REPOSITORY) private readonly embeddingsRepository: Core.Embeddings.IEmbeddingsRepository,
         private readonly embeddingsService: EmbeddingsService,
-        private readonly configService: ConfigService<EnvConfig, true>,
+        @Inject(Core.Shared.LLM_CONFIG) private readonly llmConfig:Core.Shared.ILLMConfig,
         private readonly apiKeysRepository: ApiKeysRepository,
         private readonly llmRegistry: LlmRegistry,
     ) { }
 
-    async execute(sessionId: Session['id'], userId: User['id']) {
+    async execute(sessionId: Core.Sessions.Session['id'], userId: Core.Users.User['id']) {
 
         const apiKey = await this.apiKeysRepository.findActiveKey(userId, 'gemini')
         if (!apiKey) throw new NotFoundException('no api keys')
 
         const llm = this.llmRegistry.resolve(apiKey.provider);
 
-        const secret = this.configService.get('LLM_SECRET', { infer: true })
-        const decryptedKey = await Jose.decrypt(apiKey.encryptedKey, { secret })
+        const decryptedKey = await Jose.decrypt(apiKey.encryptedKey, { secret:this.llmConfig.secret })
 
         await llm.configure(decryptedKey);
 
@@ -60,12 +55,11 @@ export class SessionMemoryUseCase {
                 content: fact,
                 embedding,
                 embeddingModel: 'gemini', //TODO:update this later
-                role: 'user'
             })
         })])
 
         await Promise.all([extractedFacts.old_facts.map(async id => {
-            await this.embeddingsRepository.deleteById(id)
+            await this.embeddingsRepository.delete(id)
         })])
         const embeds = await this.embeddingsRepository.listBySessionId(sessionId)
 

@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { DatabaseService } from "../database/database.service";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule } from "./config.module";
 import { UnitOfWork } from "../database/unit-of-work";
 
 @Module({

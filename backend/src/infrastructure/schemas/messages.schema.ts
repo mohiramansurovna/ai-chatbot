@@ -1,9 +1,7 @@
 import { pgTable, integer, text, timestamp, pgEnum } from 'drizzle-orm/pg-core'
-import { sessionsTable } from '../models'
+import { sessionsTable } from './sessions.schema'
 
 export const messageRoleEnum = pgEnum('message_role', ['assistant', 'user'])
-export type MessageRole = 'assistant' | 'user';
-
 export const messagesTable = pgTable('messages', {
     id: integer('id').generatedAlwaysAsIdentity().primaryKey(),
     session_id: integer('session_id').notNull().references(() => sessionsTable.id),
@@ -12,4 +10,4 @@ export const messagesTable = pgTable('messages', {
     created_at: timestamp('created_at').notNull().defaultNow(),
 })
 
-export type MessageModel = typeof messagesTable.$inferSelect
+export type MessageSelect = typeof messagesTable.$inferSelect

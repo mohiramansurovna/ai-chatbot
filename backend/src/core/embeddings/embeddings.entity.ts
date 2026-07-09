@@ -1,10 +1,7 @@
-import { MessageRole } from "../models";
-
 export class Embedding {
     id: number;
     userId: number;
     sessionId: number;
-    role: MessageRole;
     content: string;
     embedding: number[];
     embeddingModel: string;

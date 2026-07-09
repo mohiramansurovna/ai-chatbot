@@ -1,25 +1,24 @@
-import { EnvConfig } from "@/shared/configs/env.config";
-import { Injectable, InternalServerErrorException, OnModuleInit } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Core } from "@/core";
+import { Inject, Injectable, InternalServerErrorException, OnModuleInit } from "@nestjs/common";
+
 
 @Injectable()
 export class EmbeddingsService implements OnModuleInit {
-    constructor(private readonly configService: ConfigService<EnvConfig, true>,) { }
+    constructor(@Inject(Core.Shared.EMBEDDINGS_CONFIG) private readonly embeddingsConfig: Core.Shared.IEmbeddingsConfig) { }
 
     async onModuleInit() {
-        await this.embed('hello world').catch(err=>{
+        await this.embed('hello world').catch(err => {
             console.log(`Ollama not initialized : ${err}`)
         })
     }
 
     async embed(text: string): Promise<number[]> {
-        const baseUrl = this.configService.get('OLLAMA_URL', { infer: true });
-        const model = this.configService.get('OLLAMA_EMBED_MODEL', { infer: true })
+        const { ollamaEmbedModel, ollamaUrl } = this.embeddingsConfig;
 
-        const res = await fetch(baseUrl + '/api/embeddings', {
+        const res = await fetch(ollamaUrl + '/api/embeddings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model, prompt: text })
+            body: JSON.stringify({ model: ollamaEmbedModel, prompt: text })
         })
         if (!res.ok) {
             throw new InternalServerErrorException(`Embedding failed: ${res.status}`);
