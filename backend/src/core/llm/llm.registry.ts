@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { LlmProvider, LlmProviderName } from './llm.types'
+import { LlmProviderName } from './llm.types'
 import { AnthropicProvider } from '@/infrastructure/llm/anthropic.provider'
 import { OpenAiProvider } from '@/infrastructure/llm/openai.provider'
-import { ApiKey } from '../api-keys/api-keys.entity'
 import { GeminiProvider } from '@/infrastructure/llm/gemini.provider'
+import { LlmProvider } from './llm.provider'
 
 @Injectable()
 export class LlmRegistry {

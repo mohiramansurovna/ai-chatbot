@@ -1,4 +1,4 @@
-import { ExtractedFacts } from "./llm.types"
+import { ExtractedFacts } from "../llm.types"
 
 export function buildExtractionPrompt(conversationTranscript: string, existingEmbeddings: string): string {
     return `You are updating a user's memory profile. You extract facts ABOUT THE USER ONLY -

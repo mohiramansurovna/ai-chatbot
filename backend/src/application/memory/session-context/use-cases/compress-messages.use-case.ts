@@ -7,4 +7,11 @@
  * decompress-block(block_id)none
  * delete-compression-block(block_id)none
  */
+import { Core } from "@/core";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
+export class CompressMessageUseCase {
+    constructor() { }
+    async execute(startMessageId, messageCount,): Promise<Core.ContextBlocks.ContextBlock> { }
+}

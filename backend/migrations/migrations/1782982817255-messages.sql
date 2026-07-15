@@ -1,14 +1,17 @@
 --UP
 CREATE TYPE message_role AS ENUM ('assistant', 'user');
+CREATE TYPE message_status AS ENUM ('compressed','compressing','raw');
+
 CREATE TABLE messages (
   id              INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   session_id      INTEGER NOT NULL REFERENCES sessions(id),
   role            message_role NOT NULL,
-  is_compressed   BOOLEAN DEFAULT FALSE,
+  status          message_status NOT NULL DEFAULT 'raw',
   content         TEXT NOT NULL,
-  created_at      TIMESTAMP NOT NULL DEFAULT NOW()
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 --DOWN
 DROP TABLE messages;
-DROP TYPE message_type;
+DROP TYPE message_role;
+DROP TYPE message_status;
 
