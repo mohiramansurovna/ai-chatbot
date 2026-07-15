@@ -7,7 +7,7 @@ export const sessionsTable = pgTable('sessions', {
     user_id: integer('user_id').notNull().references(() => usersTable.id),
     deleted_at: timestamp('deleted_at', { withTimezone: true, mode: 'date' }),
     created_at: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
-    updated_at: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+    updated_at: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow().$onUpdate(() => new Date()),
 });
 
 export type SessionModel = typeof sessionsTable.$inferSelect;

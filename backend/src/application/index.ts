@@ -1,1 +1,1 @@
-export * from './_'
+export * as Application from './_'

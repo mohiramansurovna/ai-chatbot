@@ -1,5 +1,5 @@
 export * from './users/users.model'
 export * from './sessions/sessions.model'
-export * from './api-keys/api-keys.model'
+export * from '../infrastructure/schemas/api-keys.schema'
 export * from './messages/messages.model'
 export * from '../infrastructure/schemas/embeddings.schema'

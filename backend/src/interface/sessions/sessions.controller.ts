@@ -5,12 +5,12 @@ import { User } from "@/core/entities";
 import { CreateSessionDto } from "./dtos/create-session.dto";
 import { CreateSessionUseCase } from "@/application/chat/use-cases/create-session.use-case";
 import { SessionsPresenter } from "./sessions.presenter";
-import { ListSessionsUseCase } from "@/application/chat/use-cases/list-sessions.use-case";
-import { GetSessionUseCase } from "@/application/chat/use-cases/get-session.use-case";
+import { ListSessionsUseCase } from "@/application/conversation/use-cases/list-sessions.use-case";
+import { GetSessionUseCase } from "@/application/conversation/use-cases/get-session-context.use-case";
 import { MessageDto } from "./dtos/message.dto";
 import { ChatUseCase } from "@/application/chat/use-cases/chat.use-case";
 import { SessionDeleteParams } from "@anthropic-ai/sdk/resources/beta.js";
-import { SessionMemoryUseCase } from "@/application/memory/session-memory.use-case";
+import { SessionMemoryUseCase } from "@/application/memory/user-memory/use-cases/session-memory.use-case";
 
 @Controller('api/sessions')
 export class SessionsController {

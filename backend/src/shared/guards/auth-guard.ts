@@ -4,7 +4,7 @@ import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
 import { IS_PUBLIC_KEY } from "@/shared/decorators/public.decorator"
-import { TokenPayload } from "@/application/auth/types";
+import { TokenPayload } from "@/application/identity/types";
 import { User } from "@/core/entities";
 import { USERS_REPOSITORY } from "@/core/users/users.repository";
 import type { UsersRepository } from "@/core/users/users.repository";

@@ -8,5 +8,5 @@ CREATE TABLE api_keys (
   created_at      TIMESTAMP NOT NULL DEFAULT NOW()
 );
 --DOWN
-DROP TABLE IF EXISTS api_keys;
-DROP TYPE IF EXISTS api_key_status;
+DROP TABLE api_keys;
+DROP TYPE api_key_status;
