@@ -1,0 +1,1 @@
+export * as UserMemories from './_'

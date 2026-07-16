@@ -1,6 +1,6 @@
 export * from './messages.mapper'
 export * from './sessions.mapper'
 export * from './users.mapper'
-export * from './embeddings.mapper'
+export * from './user-memories.mapper'
 export * from './api-keys.mapper'
 export * from './context-blocks.mapper'

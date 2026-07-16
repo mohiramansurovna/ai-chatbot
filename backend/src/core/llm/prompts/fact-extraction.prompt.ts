@@ -1,15 +1,15 @@
-import { ExtractedFacts } from "../llm.types"
+import { ExtractedFacts, LlmMessage } from "../llm.types"
 
-export function buildExtractionPrompt(conversationTranscript: string, existingEmbeddings: string): string {
+export function buildExtractionPrompt(messages: LlmMessage[], existingMemory: { id: number, content: string }[]): string {
     return `You are updating a user's memory profile. You extract facts ABOUT THE USER ONLY -
 never facts about topics, movies, or things being discussed, and never facts based on
 the assistant's phrasing or interpretation - only what the user explicitly said.
 
 Existing facts (id: content):
-${existingEmbeddings}
+${JSON.stringify(existingMemory)}
 
 New conversation since last update:
-${conversationTranscript}
+${JSON.stringify(messages)}
 
 Rules:
 - Only extract facts that describe the USER: their preferences, identity, background, ongoing projects, or constraints.

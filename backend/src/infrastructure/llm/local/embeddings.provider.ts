@@ -3,7 +3,7 @@ import { Inject, Injectable, InternalServerErrorException, OnModuleInit } from "
 
 
 @Injectable()
-export class EmbeddingsService implements OnModuleInit {
+export class EmbeddingsProvider implements Core.Llm.IEmbeddingsProvider, OnModuleInit {
     constructor(@Inject(Core.Shared.EMBEDDINGS_CONFIG) private readonly embeddingsConfig: Core.Shared.IEmbeddingsConfig) { }
 
     async onModuleInit() {
@@ -12,7 +12,7 @@ export class EmbeddingsService implements OnModuleInit {
         })
     }
 
-    async embed(text: string): Promise<number[]> {
+    async embed(text: string): Promise<{ embedding: number[], embeddingModel: string }> {
         const { ollamaEmbedModel, ollamaUrl } = this.embeddingsConfig;
 
         const res = await fetch(ollamaUrl + '/api/embeddings', {
@@ -25,6 +25,9 @@ export class EmbeddingsService implements OnModuleInit {
         }
 
         const data = await res.json();
-        return data.embedding as number[]
+        if(!data.embedding){
+            throw new InternalServerErrorException(`Response doesn't include embedding`)
+        }
+        return { embedding: data.embedding as number[], embeddingModel: ollamaEmbedModel }
     }
 }

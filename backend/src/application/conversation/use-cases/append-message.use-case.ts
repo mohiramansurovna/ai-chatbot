@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Core } from "@/core";
-import { SessionNotFoundException } from "../errors";
+import { SessionNotFoundException } from "../../shared/errors";
 import { Shared } from "@/shared";
 
 type AppendMessageOptions = {
@@ -32,8 +32,9 @@ export class AppendMessageUseCase {
 
         return await this.messagesRepository.create({
             sessionId,
-            role:options.role,
-            content
+            role: options.role,
+            content,
+            status:'raw'
         })
     }
 }

@@ -1,1 +1,5 @@
-export * as Identity from './identity'
+export * from './identity'
+export * from './shared'
+export * from './conversation'
+export * from './memory'
+export * from './chat'
