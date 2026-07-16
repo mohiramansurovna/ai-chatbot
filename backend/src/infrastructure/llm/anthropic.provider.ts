@@ -13,10 +13,10 @@ export class AnthropicProvider implements LlmProvider {
             model: 'claude-sonnet-4-6',
             system: args.systemPrompt,
             max_tokens: 4096,
-            messages: args.messages.map((m) => ({
+            messages: args.messages?args.messages.map((m) => ({
                 role: m.role,
                 content: m.content,
-            })),
+            })):[],
         });
 
         const textBlock = res.content.find((b) => b.type === 'text');

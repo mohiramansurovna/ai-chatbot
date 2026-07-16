@@ -5,7 +5,7 @@ import { Content, GoogleGenAI } from "@google/genai";
 export class GeminiProvider implements LlmProvider {
     async generate(args:LlmProviderGenerateArgs): Promise<string> {
         const ai = new GoogleGenAI({ apiKey: args.apiKey });
-        const contents = this.mapMessagesToGemini(args.messages);
+        const contents = this.mapMessagesToGemini(args.messages??[]);
 
         try {
             const response = await ai.models.generateContent({

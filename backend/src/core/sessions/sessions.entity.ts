@@ -1,5 +1,4 @@
-import { ContextBlock } from "../context-blocks/context-blocks.entity";
-import { Message } from "../messages/messages.entity";
+import { Messages } from "../messages";
 import { User } from "../users/users.entity";
 import { SessionAccessDeniedException } from "./errors";
 
@@ -27,8 +26,8 @@ export class Session {
 export type SessionContext = {
     id: number;
     session_id: number;
-    role: "assistant" | "user" | null;
-    is_compressed: boolean | null;
+    role: Messages.MessageRole|null;
+    status: Messages.MessageStatus|null;
     content: string;
     created_at: Date;
     type: 'message' | 'context_block';

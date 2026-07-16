@@ -46,19 +46,19 @@ export class SessionsRepository implements Core.Sessions.ISessionsRepository {
         const messages = this.databaseService.db.select({
             id: Schemas.messagesTable.id,
             session_id: Schemas.messagesTable.session_id,
-            role: sql<Schemas.MessageRole | null>`${Schemas.messagesTable.role}`,
+            role: sql<Core.Messages.MessageRole | null>`${Schemas.messagesTable.role}`,
             content: Schemas.messagesTable.content,
             created_at: Schemas.messagesTable.created_at,
-            is_compressed: sql < boolean | null > `${Schemas.messagesTable.is_compressed}`,
+            status: sql<Core.Messages.MessageStatus|null> `${Schemas.messagesTable.status}`,
             type: sql<'message' | 'context_block'>`'message'`
         }).from(Schemas.messagesTable).where(eq(Schemas.messagesTable.session_id, id));
 
         const blocks = this.databaseService.db.select({
             id: Schemas.contextBlocksTable.id,
             session_id: Schemas.contextBlocksTable.session_id,
-            role: sql<Schemas.MessageRole | null>`NULL`,
+            role: sql<Core.Messages.MessageRole | null>`NULL`,
             content: Schemas.contextBlocksTable.content,
-            is_compressed: sql<boolean | null>`NULL`,
+            status: sql<Core.Messages.MessageStatus | null>`NULL`,
             created_at: Schemas.contextBlocksTable.created_at,
             type: sql<'context_block' | 'message'>`'context_block'`
         }).from(Schemas.contextBlocksTable).where(eq(Schemas.contextBlocksTable.session_id, id));

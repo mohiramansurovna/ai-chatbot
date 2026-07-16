@@ -17,7 +17,7 @@ export class SessionMemoryUseCase {
         @Inject(Core.Messages.MESSAGES_REPOSITORY) private readonly messagesRepository: Core.Messages.IMessagesRepository,
         @Inject(Core.Embeddings.EMBEDDINGS_REPOSITORY) private readonly embeddingsRepository: Core.Embeddings.IEmbeddingsRepository,
         private readonly embeddingsService: EmbeddingsService,
-        @Inject(Core.Shared.LLM_CONFIG) private readonly llmConfig:Core.Shared.ILLMConfig,
+        @Inject(Core.Shared.LLM_CONFIG) private readonly llmConfig: Core.Shared.ILLMConfig,
         private readonly apiKeysRepository: ApiKeysRepository,
         private readonly llmRegistry: LlmRegistry,
     ) { }
@@ -29,7 +29,7 @@ export class SessionMemoryUseCase {
 
         const llm = this.llmRegistry.resolve(apiKey.provider);
 
-        const decryptedKey = await Jose.decrypt(apiKey.encryptedKey, { secret:this.llmConfig.secret })
+        const decryptedKey = await Jose.decrypt(apiKey.encryptedKey, { secret: this.llmConfig.secret })
 
         await llm.configure(decryptedKey);
 

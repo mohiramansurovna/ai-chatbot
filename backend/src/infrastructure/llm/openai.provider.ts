@@ -12,10 +12,10 @@ export class OpenAiProvider implements LlmProvider {
             model: 'gpt - 5.1 - mini',
             messages: [
                 { role: 'system', content: args.systemPrompt },
-                ...args.messages.map((m) => ({
+                ...args.messages?args.messages.map((m) => ({
                     role: m.role,
                     content: m.content,
-                })),
+                })):[],
             ],
         });
 
