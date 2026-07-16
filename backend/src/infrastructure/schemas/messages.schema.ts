@@ -9,7 +9,7 @@ export const messagesTable = pgTable('messages', {
     session_id: integer('session_id').notNull().references(() => sessionsTable.id),
     role: messageRoleEnum('role').notNull(),
     content: text('content').notNull(),
-    status:messageStatusEnum('status').default('raw'),
+    status:messageStatusEnum('status').default('raw').notNull(),
     created_at: timestamp('created_at').notNull().defaultNow(),
 })
 

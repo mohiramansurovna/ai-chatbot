@@ -1,16 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigModule as NestConfigModule } from '@nestjs/config';
-import { validate } from '../../shared/configs/env.config';
-import { DatabaseModule } from './database.module';
-import { AuthModule } from './identity.module';
-import { UsersModule } from './users.module';
-import { ApiKeysModule } from './api-keys.module';
-import { SessionsModule } from './sessions.module';
-import { LlmModule } from './llm.module';
-import { EmbeddingsModule } from './embeddings.module';
 import { APP_GUARD } from '@nestjs/core';
-import { AccessTokenGuard } from '@/interface/guards/access-token.guard';
-
+import {ConfigModule as NestConfigModule } from '@nestjs/config';
+import { validate } from '../../shared/configs/env.config';
+import { Interface } from '@/interface';
+import { Modules } from '.';
 
 @Module({
   imports: [
@@ -21,17 +14,19 @@ import { AccessTokenGuard } from '@/interface/guards/access-token.guard';
       },
       envFilePath: '.env',
     }),
-    DatabaseModule,
-    UsersModule,
-    AuthModule,
-    ApiKeysModule,
-    SessionsModule,
-    LlmModule,
-    EmbeddingsModule,
-    ConfigModule,
+    Modules.DatabaseModule,
+    Modules.ConfigModule,
+    Modules.IdentityModule,
+    Modules.ConversationModule,
+    Modules.MemoryModule,
+    Modules.LlmModule,
+    Modules.ChatModule,
   ],
   providers: [
-    { provide: APP_GUARD, useExisting: AccessTokenGuard },
+    {
+      provide: APP_GUARD,
+      useClass: Interface.Guards.AccessTokenGuard
+    },
   ],
 })
 

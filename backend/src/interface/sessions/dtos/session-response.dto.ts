@@ -1,8 +1,7 @@
-import { Session } from "@/core/entities";
-import { Message } from "@/core/messages/messages.entity";
+import { Core } from "@/core";
 
-export type SessionWithMessages = Session & {
-    messages: Message[]
+export type SessionWithMessages = Core.Sessions.Session & {
+    messages: Core.Messages.Message[]
 }
 
 export class SessionsResponseDto {
@@ -16,7 +15,7 @@ export class SessionDetailsResponseDto {
     id: number;
     title: string;
     userId: number;
-    messages: Message[];
+    messages: Core.Messages.Message[];
     createdAt: Date;
     updatedAt: Date;
 }

@@ -1,9 +1,8 @@
-import { Session } from "@/core/entities";
+import { Core } from "@/core";
 import { SessionsResponseDto, SessionWithMessages, SessionDetailsResponseDto } from "./dtos/session-response.dto";
-import { Message } from "@/core/messages/messages.entity";
 
 export class SessionsPresenter {
-    static toResponse(entity: Session): SessionsResponseDto {
+    static toResponse(entity:Core.Sessions.Session): SessionsResponseDto {
         return {
             id: entity.id,
             title: entity.title,

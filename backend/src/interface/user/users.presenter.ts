@@ -1,4 +1,4 @@
-import { User } from "@/core/entities";
+import { Core } from "@/core";
 
 export type UserResponse = {
     id: number;
@@ -7,7 +7,7 @@ export type UserResponse = {
 }
 
 export class UsersPresenter {
-    static toResponse(entity: User): UserResponse {
+    static toResponse(entity: Core.Users.User): UserResponse {
         return {
             id: entity.id,
             name: entity.name,

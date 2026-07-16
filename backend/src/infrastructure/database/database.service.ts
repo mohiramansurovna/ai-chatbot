@@ -11,7 +11,7 @@ export class DatabaseService {
   constructor(
     @Inject(Core.Shared.DATABASE_CONFIG) private readonly databaseConfig: Core.Shared.IDatabaseConfig
   ) {
-    const { user, password, port, host } = this.databaseConfig;
+    const { user, password, port, host, name } = this.databaseConfig;
     const connectionString = `postgresql://${user}:${password}@${host}:${port}/${name}?schema=public`;
 
     const dbClient = drizzle(connectionString, {

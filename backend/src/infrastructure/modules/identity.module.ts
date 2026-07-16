@@ -1,43 +1,36 @@
+import { Application } from "@/application";
+import { Repositories } from "../repositories";
+import { Core } from "@/core";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "./config.module";
 import { DatabaseModule } from "./database.module";
-import { UsersModule } from "./users.module";
-import { ApiKeysModule } from "./api-keys.module";
-import { AuthController } from '@/interface/auth/auth.controller'
-import {
-    RefreshUseCase,
-    LoginUseCase,
-    RegisterUseCase,
-    GetProfileUseCase,
-    UpdateProfileUseCase,
-    DeleteAccountUseCase,
-    AddApiKeyUseCase,
-    GetActiveKeyUseCase,
-    ListApiKeysUseCase,
-    RevokeApiKeyUseCase,
-} from "@/application/identity/use-cases"
-import { AccessTokenGuard } from "@/interface/guards/access-token.guard";
+import { AuthController } from "@/interface/auth/auth.controller";
+import { UsersController } from "@/interface/user/users.controller";
 
 @Module({
-    imports: [
-        UsersModule,
-        ApiKeysModule,
-        ConfigModule,
-        DatabaseModule
-    ],
+    imports: [ConfigModule, DatabaseModule],
     providers: [
-        RefreshUseCase,
-        LoginUseCase,
-        RegisterUseCase,
-        GetProfileUseCase,
-        UpdateProfileUseCase,
-        DeleteAccountUseCase,
-        AddApiKeyUseCase,
-        GetActiveKeyUseCase,
-        ListApiKeysUseCase,
-        RevokeApiKeyUseCase,
-        AccessTokenGuard,
+        Application.Identity.AddApiKeyUseCase,
+        Application.Identity.GetActiveKeyUseCase,
+        Application.Identity.ListApiKeysUseCase,
+        Application.Identity.RevokeApiKeyUseCase,
+        Application.Identity.GetProfileUseCase,
+        Application.Identity.UpdateProfileUseCase,
+        Application.Identity.DeleteAccountUseCase,
+        Application.Identity.RegisterUseCase,
+        Application.Identity.LoginUseCase,
+        Application.Identity.RefreshUseCase,
+
+        {
+            provide: Core.Users.USERS_REPOSITORY,
+            useClass: Repositories.UsersRepository,
+        },
+        {
+            provide: Core.ApiKeys.API_KEYS_REPOSITORY,
+            useClass: Repositories.ApiKeysRepository,
+        }
     ],
-    controllers: [AuthController]
+    controllers: [AuthController, UsersController],
+    exports: [Application.Identity.GetActiveKeyUseCase]
 })
-export class AuthModule { }
+export class IdentityModule { }

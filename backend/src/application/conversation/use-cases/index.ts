@@ -1,4 +1,6 @@
 export * from './create-session.use-case'
-export * from './get-session-context.use-case'
+export * from './get-session.use-case'
+export * from './delete-session.use-case'
 export * from './rename-session.use-case'
 export * from './list-sessions.use-case'
+export * from './append-message.use-case'

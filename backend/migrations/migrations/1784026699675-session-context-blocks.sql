@@ -7,7 +7,7 @@ CREATE TABLE session_context_blocks (
     content                  TEXT NOT NULL,
     created_at               TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at               TIMESTAMPTZ
-)
+);
 
 CREATE INDEX idx_session_context_blocks_session_created
     ON session_context_blocks (session_id, created_at);
