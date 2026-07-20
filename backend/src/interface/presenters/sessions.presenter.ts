@@ -1,5 +1,5 @@
 import { Core } from "@/core";
-import { SessionsResponseDto, SessionWithMessages, SessionDetailsResponseDto } from "./dtos/session-response.dto";
+import { SessionsResponseDto, SessionWithMessages, SessionDetailsResponseDto } from "../dtos/session-response.dto";
 
 export class SessionsPresenter {
     static toResponse(entity:Core.Sessions.Session): SessionsResponseDto {

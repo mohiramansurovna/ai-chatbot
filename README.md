@@ -41,8 +41,3 @@ docker-compose.yml  Local services for Postgres and Ollama
 2. Start the local database and Ollama services.
 3. Run the backend and frontend development servers.
 4. Open the app in your browser and sign in or register.
-
-## Documentation links
-
-- Backend guide: [backend/README.md](./backend/README.md)
-- Frontend guide: [frontend/README.md](./frontend/README.md)

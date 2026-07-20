@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
-import { AddApiKeyDto } from "./dtos/add-api-key.dto";
+import { AddApiKeyDto } from "../dtos/add-api-key.dto";
 import { CurrentUser } from "@/shared/decorators/current-user.decorator";
 import { User } from "@/core/users/users.entity";
 import { AddApiKeyUseCase } from "@/application/identity/use-cases";
-import { UserResponse, UsersPresenter } from "./users.presenter";
+import { UserResponse, UsersPresenter } from "../presenters/users.presenter";
 import { Public } from "@/shared/decorators/public.decorator";
 
 @Controller('api/user')
