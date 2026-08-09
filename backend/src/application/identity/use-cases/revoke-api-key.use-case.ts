@@ -24,6 +24,6 @@ export class RevokeApiKeyUseCase {
             throw new ApiKeyAccessDeniedException();
         }
 
-        await this.apiKeysRepository.update(apiKey.id, { status: 'revoked' });
+        await this.apiKeysRepository.update(apiKey.revoke());
     }
 }

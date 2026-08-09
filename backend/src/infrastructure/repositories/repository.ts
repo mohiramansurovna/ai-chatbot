@@ -4,17 +4,30 @@ import { PgColumn, PgTable } from 'drizzle-orm/pg-core';
 import { Database } from '../database';
 import { Mappers } from '../mappers';
 
-export class Repository<Entity extends Core.Shared.IEntity> implements Core.Shared.IRepository<Entity> {
-    constructor(
-        private readonly table: PgTable,
-        private readonly pk: PgColumn,
-        private readonly databaseService: Database.DatabaseService,
-        private readonly mapper: Mappers.IMapper<
-            Entity,
-            typeof this.table.$inferSelect,
-            typeof this.table.$inferInsert
-        >
-    ) {}
+interface RepositoryArgs<Entity extends Core.Shared.IEntity, ModelSelect, ModelInsert> {
+    table: PgTable;
+    pk: PgColumn;
+
+    databaseService: Database.DatabaseService;
+    mapper: Mappers.IMapper<Entity, ModelSelect, ModelInsert>;
+}
+
+export class Repository<Entity extends Core.Shared.IEntity, TTable extends PgTable> implements Core
+    .Shared.IRepository<Entity> {
+    protected readonly table: PgTable;
+    protected readonly pk: PgColumn;
+    protected readonly databaseService: Database.DatabaseService;
+    protected readonly mapper: Mappers.IMapper<
+        Entity,
+        TTable['$inferSelect'],
+        TTable['$inferInsert']
+    >;
+    constructor(args: RepositoryArgs<Entity, TTable['$inferSelect'], TTable['$inferInsert']>) {
+        this.table = args.table;
+        this.pk = args.pk;
+        this.databaseService = args.databaseService;
+        this.mapper = args.mapper;
+    }
 
     async create(entity: Entity, tx?: Core.Shared.ITx): Promise<Entity> {
         const connection = this.databaseService.getExecutor(tx);

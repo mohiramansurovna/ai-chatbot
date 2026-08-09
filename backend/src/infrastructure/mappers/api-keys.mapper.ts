@@ -1,26 +1,41 @@
-import { Core } from "@/core"
-import { Schemas } from "../schemas"
+import { Core } from '@/core';
+import { Schemas } from '../schemas';
+import { IMapper } from './mapper.interface';
+import { Injectable } from '@nestjs/common';
 
-export class ApiKeysMapper {
-    static toModel(entity: Core.ApiKeys.ApiKey): Schemas.ApiKeyModel {
+@Injectable()
+export class ApiKeysMapper implements IMapper<
+    Core.ApiKeys.ApiKey,
+    Schemas.ApiKeySelect,
+    Schemas.ApiKeyInsert
+> {
+    toInsertModel(entity: Core.ApiKeys.ApiKey): Schemas.ApiKeyInsert {
         return {
-            id: entity.id,
             user_id: entity.userId,
             provider: entity.provider,
             encrypted_key: entity.encryptedKey,
             status: entity.status,
             created_at: entity.createdAt,
-        }
+        };
+    }
+    toUpdateModel(entity: Core.ApiKeys.ApiKey): Partial<Schemas.ApiKeyInsert> {
+        return {
+            user_id: entity.userId,
+            provider: entity.provider,
+            encrypted_key: entity.encryptedKey,
+            status: entity.status,
+            created_at: entity.createdAt,
+        };
     }
 
-    static toDomain(model: Schemas.ApiKeyModel): Core.ApiKeys.ApiKey {
-        return new Core.ApiKeys.ApiKey({
+    toDomain(model: Schemas.ApiKeySelect): Core.ApiKeys.ApiKey {
+        return Core.ApiKeys.ApiKey.fromModel({
             id: model.id,
             userId: model.user_id,
             provider: model.provider,
             encryptedKey: model.encrypted_key,
             status: model.status,
             createdAt: model.created_at,
-        })
+        });
     }
 }

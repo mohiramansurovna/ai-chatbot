@@ -4,8 +4,6 @@ import { Core } from "@/core";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "./config.module";
 import { DatabaseModule } from "./database.module";
-import { AuthController } from "@/interface/auth/auth.controller";
-import { UsersController } from "@/interface/user/users.controller";
 
 @Module({
     imports: [ConfigModule, DatabaseModule],
@@ -30,7 +28,6 @@ import { UsersController } from "@/interface/user/users.controller";
             useClass: Repositories.ApiKeysRepository,
         }
     ],
-    controllers: [AuthController, UsersController],
     exports: [Application.Identity.GetActiveKeyUseCase]
 })
 export class IdentityModule { }
