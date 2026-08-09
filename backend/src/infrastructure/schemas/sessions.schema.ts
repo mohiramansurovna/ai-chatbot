@@ -10,4 +10,5 @@ export const sessionsTable = pgTable('sessions', {
     updated_at: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow().$onUpdate(() => new Date()),
 });
 
-export type SessionModel = typeof sessionsTable.$inferSelect;
+export type SessionSelect = typeof sessionsTable.$inferSelect;
+export type SessionInsert = typeof sessionsTable.$inferInsert;

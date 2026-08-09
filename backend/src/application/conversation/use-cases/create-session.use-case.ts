@@ -7,6 +7,7 @@ import { Inject, Injectable } from "@nestjs/common";
 export class CreateSessionUseCase {
     constructor(@Inject(Core.Sessions.SESSIONS_REPOSITORY) private readonly sessionsRepository: Core.Sessions.ISessionsRepository) { }
     async execute(title: string, userId: Core.Sessions.Session['userId']): Promise<Core.Sessions.Session> {
-        return await this.sessionsRepository.create({ title, userId })
+        const session=Core.Sessions.Session.create({title, userId})
+        return await this.sessionsRepository.create(session)
     }
 }
