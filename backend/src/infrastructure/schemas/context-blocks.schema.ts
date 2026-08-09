@@ -13,4 +13,5 @@ export const contextBlocksTable = pgTable('session_context_blocks', {
     updated_at: timestamp('updated_at').$onUpdate(()=>new Date()),
 })
 
-export type ContextBlockModel = typeof contextBlocksTable.$inferSelect
+export type ContextBlockSelect = typeof contextBlocksTable.$inferSelect
+export type ContextBlockInsert = typeof contextBlocksTable.$inferInsert
