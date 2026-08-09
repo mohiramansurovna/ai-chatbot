@@ -13,4 +13,5 @@ export const messagesTable = pgTable('messages', {
     created_at: timestamp('created_at').notNull().defaultNow(),
 })
 
-export type MessageSelect = typeof messagesTable.$inferSelect
+export type MessageSelect = typeof messagesTable.$inferSelect;
+export type MessageInsert = typeof messagesTable.$inferInsert;

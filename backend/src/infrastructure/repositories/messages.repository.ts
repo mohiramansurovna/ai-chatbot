@@ -1,26 +1,24 @@
-import { Injectable } from "@nestjs/common";
-import { eq, asc, and, gte } from "drizzle-orm";
-import { Database } from "../database";
-import { Core } from "@/core";
-import { Schemas } from "../schemas";
-import { Mappers } from "../mappers";
-import { ListBySessionIdOptions } from "@/core/messages/messages.repository";
+import { Injectable } from '@nestjs/common';
+import { eq, asc, and, gte } from 'drizzle-orm';
+import { Database } from '../database';
+import { Core } from '@/core';
+import { Schemas } from '../schemas';
+import { Mappers } from '../mappers';
+import { ListBySessionIdOptions } from '@/core/messages/messages.repository';
+import { Repository } from './repository';
 
 @Injectable()
-export class MessagesRepository implements Core.Messages.IMessagesRepository {
-    constructor(private readonly databaseService: Database.DatabaseService) { }
-    async create(args: Core.Messages.MessageInsert, tx?: Database.Tx): Promise<Core.Messages.Message> {
-        const connection = this.databaseService.getExecutor(tx);
-        const [message] = await connection.insert(Schemas.messagesTable).values({
-            session_id: args.sessionId,
-            role: args.role,
-            content: args.content
-        }).returning()
-        return Mappers.MessagesMapper.toDomain(message)
-    }
-    async delete(id: Core.Messages.Message['id'], tx?: Database.Tx): Promise<void> {
-        const connection = this.databaseService.getExecutor(tx);
-        await connection.delete(Schemas.messagesTable).where(eq(Schemas.messagesTable.id, id))
+export class MessagesRepository
+    extends Repository<Core.Messages.Message, typeof Schemas.messagesTable>
+    implements Core.Messages.IMessagesRepository
+{
+    constructor(databaseService: Database.DatabaseService, mapper: Mappers.MessagesMapper) {
+        super({
+            table: Schemas.messagesTable,
+            pk: Schemas.messagesTable.id,
+            databaseService,
+            mapper,
+        });
     }
 
     async listBySessionId(
@@ -59,6 +57,6 @@ export class MessagesRepository implements Core.Messages.IMessagesRepository {
         }
 
         const messages = await query;
-        return messages.map(message => Mappers.MessagesMapper.toDomain(message));
+        return messages.map(message => this.mapper.toDomain(message));
     }
 }

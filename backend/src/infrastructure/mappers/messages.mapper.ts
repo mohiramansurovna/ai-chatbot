@@ -1,27 +1,39 @@
+import { Core } from '@/core';
+import { Schemas } from '../schemas';
+import { Injectable } from '@nestjs/common';
+import { IMapper } from './mapper.interface';
 
-import { Core } from "@/core";
-import { Schemas } from "../schemas";
-
-export class MessagesMapper {
-    static toDomain(messageModel: Schemas.MessageSelect): Core.Messages.Message {
-        return new Core.Messages.Message({
+@Injectable()
+export class MessagesMapper implements IMapper<
+    Core.Messages.Message,
+    Schemas.MessageSelect,
+    Schemas.MessageInsert
+> {
+    toDomain(messageModel: Schemas.MessageSelect): Core.Messages.Message {
+        return Core.Messages.Message.fromModel({
             id: messageModel.id,
             sessionId: messageModel.session_id,
-            status:messageModel.status,
+            status: messageModel.status,
             role: messageModel.role,
             content: messageModel.content,
-            createdAt: messageModel.created_at
+            createdAt: messageModel.created_at,
         });
     }
-
-    static toModel(message: Core.Messages.Message): Schemas.MessageSelect {
+    toInsertModel(entity: Core.Messages.Message): Schemas.MessageInsert {
         return {
-            id: message.id,
-            session_id: message.sessionId,
-            status:message.status,
-            role: message.role,
-            content: message.content,
-            created_at: message.createdAt
-        }
+            session_id: entity.sessionId,
+            status: entity.status,
+            role: entity.role,
+            content: entity.content,
+        };
+    }
+
+    toUpdateModel(entity: Core.Messages.Message): Partial<Schemas.MessageInsert> {
+        return {
+            session_id: entity.sessionId,
+            status: entity.status,
+            role: entity.role,
+            content: entity.content,
+        };
     }
 }
