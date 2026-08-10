@@ -4,25 +4,24 @@ import { PgColumn, PgTable } from 'drizzle-orm/pg-core';
 import { Database } from '../database';
 import { Mappers } from '../mappers';
 
-interface RepositoryArgs<Entity extends Core.Shared.IEntity, ModelSelect, ModelInsert> {
+interface RepositoryArgs<Mapper> {
     table: PgTable;
     pk: PgColumn;
 
     databaseService: Database.DatabaseService;
-    mapper: Mappers.IMapper<Entity, ModelSelect, ModelInsert>;
+    mapper: Mapper;
 }
 
-export class Repository<Entity extends Core.Shared.IEntity, TTable extends PgTable> implements Core
-    .Shared.IRepository<Entity> {
+export class Repository<
+    Entity extends Core.Shared.IEntity,
+    TTable extends PgTable,
+    Mapper extends Mappers.IMapper<Entity, TTable['$inferSelect'], TTable['$inferInsert']>,
+> implements Core.Shared.IRepository<Entity> {
     protected readonly table: PgTable;
     protected readonly pk: PgColumn;
     protected readonly databaseService: Database.DatabaseService;
-    protected readonly mapper: Mappers.IMapper<
-        Entity,
-        TTable['$inferSelect'],
-        TTable['$inferInsert']
-    >;
-    constructor(args: RepositoryArgs<Entity, TTable['$inferSelect'], TTable['$inferInsert']>) {
+    protected readonly mapper: Mapper;
+    constructor(args: RepositoryArgs<Mapper>) {
         this.table = args.table;
         this.pk = args.pk;
         this.databaseService = args.databaseService;

@@ -14,4 +14,5 @@ export const usersTable = pgTable('users', {
 
 export const USERS_EMAIL_UNIQUE_INDEX = 'idx_users_email'
 
-export type UserModel = typeof usersTable.$inferSelect;
+export type UserSelect = typeof usersTable.$inferSelect;
+export type UserInsert = typeof usersTable.$inferInsert;

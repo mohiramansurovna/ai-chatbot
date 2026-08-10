@@ -1,59 +1,51 @@
-import { Injectable } from "@nestjs/common";
-import { eq, getTableColumns, inArray, sql } from "drizzle-orm";
-import { Core } from "@/core";
-import { Database } from "../database";
-import { Mappers } from "../mappers";
-import { Schemas } from "../schemas";
+import { Injectable } from '@nestjs/common';
+import { eq, getTableColumns, inArray, sql } from 'drizzle-orm';
+import { Core } from '@/core';
+import { Database } from '../database';
+import { Mappers } from '../mappers';
+import { Schemas } from '../schemas';
+import { Repository } from './repository';
 
 @Injectable()
-export class UserMemoriesRepository implements Core.UserMemories.IUserMemoriesRepository {
-    constructor(private readonly databaseService: Database.DatabaseService) { }
-    async create(args: Core.UserMemories.InsertUserMemories, tx?: Database.Tx): Promise<void> {
-        const connection = this.databaseService.getExecutor(tx);
-        await connection.insert(Schemas.userMemoriesTable).values({
-            user_id: args.userId,
-            content: args.content,
-            embedding: args.embedding,
-            embedding_model: args.embeddingModel,
+export class UserMemoriesRepository
+    extends Repository<
+        Core.UserMemories.UserMemory,
+        typeof Schemas.userMemoriesTable,
+        Mappers.UserMemoriesMapper
+    >
+    implements Core.UserMemories.IUserMemoriesRepository
+{
+    constructor(databaseService: Database.DatabaseService, mapper: Mappers.UserMemoriesMapper) {
+        super({
+            table: Schemas.userMemoriesTable,
+            pk: Schemas.userMemoriesTable.id,
+            databaseService,
+            mapper,
         });
     }
-    async createMany(args: Core.UserMemories.InsertUserMemories[], tx?: Database.Tx): Promise<void> {
+    async createMany(entities: Core.UserMemories.UserMemory[], tx?: Database.Tx): Promise<void> {
         const connection = this.databaseService.getExecutor(tx);
-        await connection.insert(Schemas.userMemoriesTable).values(args.map(memory => ({
-            user_id: memory.userId,
-            content: memory.content,
-            embedding: memory.embedding,
-            embedding_model: memory.embeddingModel,
-        })));
-    }
-    async update(id: Core.UserMemories.UserMemory['id'], args: Core.UserMemories.UpdateUserMemories, tx?: Database.Tx): Promise<void> {
-        const connection = this.databaseService.getExecutor(tx);
-        await connection.update(Schemas.userMemoriesTable).set(args)
-            .where(eq(Schemas.userMemoriesTable.id, id))
-    }
-
-    async delete(id: Core.UserMemories.UserMemory['id'], tx?: Database.Tx): Promise<void> {
-        const connection = this.databaseService.getExecutor(tx);
-        await connection.delete(Schemas.userMemoriesTable)
-            .where(eq(Schemas.userMemoriesTable.id, id))
+        await connection
+            .insert(Schemas.userMemoriesTable)
+            .values(entities.map(entity => this.mapper.toInsertModel(entity)));
     }
     async deleteMany(ids: number[], tx?: Database.Tx): Promise<void> {
         const connection = this.databaseService.getExecutor(tx);
-        await connection.delete(Schemas.userMemoriesTable)
-            .where(inArray(Schemas.userMemoriesTable.id, ids))
+        await connection
+            .delete(Schemas.userMemoriesTable)
+            .where(inArray(Schemas.userMemoriesTable.id, ids));
     }
-    async findById(id: number): Promise<Core.UserMemories.UserMemory> {
-        const [userMemory] = await this.databaseService.db.select()
-            .from(Schemas.userMemoriesTable).where(eq(Schemas.userMemoriesTable.id, id));
-        return Mappers.UserMemoriesMapper.toDomain(userMemory)
-    }
-    async list(userId: Core.UserMemories.UserMemory['userId']): Promise<Core.UserMemories.UserMemory[]> {
-        const rows = await this.databaseService.db.select()
+
+    async listByUserId(
+        userId: Core.UserMemories.UserMemory['userId']
+    ): Promise<Core.UserMemories.UserMemory[]> {
+        const rows = await this.databaseService.db
+            .select()
             .from(Schemas.userMemoriesTable)
             .where(eq(Schemas.userMemoriesTable.user_id, userId))
             .orderBy(Schemas.userMemoriesTable.created_at);
 
-        return rows.map((row) => Mappers.UserMemoriesMapper.toDomain(row))
+        return rows.map(row => this.mapper.toDomain(row));
     }
     async findRelevant(
         userId: Core.UserMemories.UserMemory['userId'],
@@ -65,14 +57,13 @@ export class UserMemoriesRepository implements Core.UserMemories.IUserMemoriesRe
         const rows = await this.databaseService.db
             .select({
                 ...getTableColumns(Schemas.userMemoriesTable),
-                similarity: sql<number>`1 - (${Schemas.userMemoriesTable.embedding} <=> ${vectorLiteral}::vector)`
+                similarity: sql<number>`1 - (${Schemas.userMemoriesTable.embedding} <=> ${vectorLiteral}::vector)`,
             })
             .from(Schemas.userMemoriesTable)
             .where(eq(Schemas.userMemoriesTable.user_id, userId))
             .orderBy(sql`${Schemas.userMemoriesTable.embedding} <=> ${vectorLiteral}::vector`)
             .limit(limit);
 
-        return rows.map((UserMemory) => Mappers.UserMemoriesMapper.toDomainWithSimilarity(UserMemory))
+        return rows.map(UserMemory => this.mapper.toDomainWithSimilarity(UserMemory));
     }
-
 }

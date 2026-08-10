@@ -8,7 +8,7 @@ import { Repository } from './repository';
 
 @Injectable()
 export class SessionsRepository
-    extends Repository<Core.Sessions.Session, typeof Schemas.sessionsTable>
+    extends Repository<Core.Sessions.Session, typeof Schemas.sessionsTable, Mappers.SessionsMapper>
     implements Core.Sessions.ISessionsRepository
 {
     constructor(databaseService: Database.DatabaseService, mapper: Mappers.SessionsMapper) {

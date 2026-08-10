@@ -1,13 +1,17 @@
-import { Database } from '../database';
-import { Injectable } from '@nestjs/common';
 import { Core } from '@/core';
-import { Schemas } from '../schemas';
+import { Injectable } from '@nestjs/common';
+import { Database } from '../database';
 import { Mappers } from '../mappers';
+import { Schemas } from '../schemas';
 import { Repository } from './repository';
 
 @Injectable()
 export class ContextBlocksRepository
-    extends Repository<Core.ContextBlocks.ContextBlock, typeof Schemas.contextBlocksTable>
+    extends Repository<
+        Core.ContextBlocks.ContextBlock,
+        typeof Schemas.contextBlocksTable,
+        Mappers.ContextBlocksMapper
+    >
     implements Core.ContextBlocks.IContextBlocksRepository
 {
     constructor(databaseService: Database.DatabaseService, mapper: Mappers.ContextBlocksMapper) {

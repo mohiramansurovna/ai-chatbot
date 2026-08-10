@@ -12,4 +12,5 @@ export const userMemoriesTable = pgTable('user_memories', {
     updated_at: timestamp('updated_at', { withTimezone: true }).$onUpdate(() => new Date()),
 })
 
-export type UserMemoryModel = typeof userMemoriesTable.$inferSelect
+export type UserMemorySelect = typeof userMemoriesTable.$inferSelect
+export type UserMemoryInsert = typeof userMemoriesTable.$inferInsert

@@ -9,7 +9,7 @@ import { Repository } from './repository';
 
 @Injectable()
 export class MessagesRepository
-    extends Repository<Core.Messages.Message, typeof Schemas.messagesTable>
+    extends Repository<Core.Messages.Message, typeof Schemas.messagesTable, Mappers.MessagesMapper>
     implements Core.Messages.IMessagesRepository
 {
     constructor(databaseService: Database.DatabaseService, mapper: Mappers.MessagesMapper) {

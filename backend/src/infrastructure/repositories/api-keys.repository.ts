@@ -8,7 +8,7 @@ import { Repository } from './repository';
 
 @Injectable()
 export class ApiKeysRepository
-    extends Repository<Core.ApiKeys.ApiKey, typeof Schemas.apiKeysTable>
+    extends Repository<Core.ApiKeys.ApiKey, typeof Schemas.apiKeysTable, Mappers.ApiKeysMapper>
     implements Core.ApiKeys.IApiKeysRepository
 {
     constructor(databaseService: Database.DatabaseService, mapper: Mappers.ApiKeysMapper) {
