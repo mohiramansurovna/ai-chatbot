@@ -9,9 +9,8 @@ export class SessionsMapper implements IMapper<
     Schemas.SessionSelect,
     Schemas.SessionInsert
 > {
-    toInsertModel(entity: Core.Sessions.Session): Schemas.SessionSelect {
+    toInsertModel(entity: Core.Sessions.Session): Schemas.SessionInsert {
         return {
-            id: entity.id,
             title: entity.title,
             user_id: entity.userId,
             created_at: entity.createdAt,
@@ -19,12 +18,10 @@ export class SessionsMapper implements IMapper<
             deleted_at: entity.deletedAt,
         };
     }
-    toUpdateModel(entity: Core.Sessions.Session): Schemas.SessionSelect {
+    toUpdateModel(entity: Core.Sessions.Session): Schemas.SessionInsert {
         return {
-            id: entity.id,
             title: entity.title,
             user_id: entity.userId,
-            created_at: entity.createdAt,
             updated_at: entity.updatedAt,
             deleted_at: entity.deletedAt,
         };

@@ -9,12 +9,12 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import type { Response, Request } from 'express';
-import { LoginDto, RegisterBodyDto } from './dtos';
+import { LoginDto, RegisterBodyDto } from '../dtos';
 import { randomUUID } from 'crypto';
-import { Decorators } from '../shared';
+import { Decorators } from '../../shared';
 
-@Controller('api/identity')
-export class IdentityController {
+@Controller('/auth')
+export class AuthController {
     constructor(
         private readonly registerUseCase: Application.Identity.RegisterUseCase,
         private readonly loginUseCase: Application.Identity.LoginUseCase,
@@ -23,9 +23,9 @@ export class IdentityController {
 
     @Decorators.Public()
     @Post('register')
-    async register(@Body() body: RegisterBodyDto): Promise<string> {
+    async register(@Body() body: RegisterBodyDto): Promise<{ message: string }> {
         await this.registerUseCase.execute(body);
-        return 'user registered successfully';
+        return { message: 'user registered successfully' };
     }
 
     @Decorators.Public()

@@ -9,9 +9,8 @@ export class UsersMapper implements IMapper<
     Schemas.UserSelect,
     Schemas.UserInsert
 > {
-    toInsertModel(entity: Core.Users.User): Schemas.UserSelect {
+    toInsertModel(entity: Core.Users.User): Schemas.UserInsert {
         return {
-            id: entity.id,
             name: entity.name,
             email: entity.email,
             password_hash: entity.passwordHash,
@@ -22,11 +21,9 @@ export class UsersMapper implements IMapper<
     }
     toUpdateModel(entity: Core.Users.User): Partial<Schemas.UserSelect> {
         return {
-            id: entity.id,
             name: entity.name,
             email: entity.email,
             password_hash: entity.passwordHash,
-            created_at: entity.createdAt,
             updated_at: entity.updatedAt,
             deleted_at: entity.deletedAt,
         };

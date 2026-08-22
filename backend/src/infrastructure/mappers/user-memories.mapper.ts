@@ -18,9 +18,8 @@ export class UserMemoriesMapper implements IMapper<
         return Object.assign(userMemory, { similarity: similarity });
     }
 
-    toInsertModel(entity: Core.UserMemories.UserMemory): Schemas.UserMemorySelect {
+    toInsertModel(entity: Core.UserMemories.UserMemory): Schemas.UserMemoryInsert {
         return {
-            id: entity.id,
             user_id: entity.userId,
             content: entity.content,
             embedding: entity.embedding,
@@ -30,14 +29,12 @@ export class UserMemoriesMapper implements IMapper<
         };
     }
 
-    toUpdateModel(entity: Core.UserMemories.UserMemory): Partial<Schemas.UserMemorySelect> {
+    toUpdateModel(entity: Core.UserMemories.UserMemory): Partial<Schemas.UserMemoryInsert> {
         return {
-            id: entity.id,
             user_id: entity.userId,
             content: entity.content,
             embedding: entity.embedding,
             embedding_model: entity.embeddingModel,
-            created_at: entity.createdAt,
             updated_at: entity.updatedAt,
         };
     }
