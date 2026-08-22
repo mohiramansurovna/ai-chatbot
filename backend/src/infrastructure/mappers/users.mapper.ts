@@ -1,7 +1,9 @@
 import { Core } from '@/core';
 import { Schemas } from '../schemas';
 import { IMapper } from './mapper.interface';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class UsersMapper implements IMapper<
     Core.Users.User,
     Schemas.UserSelect,

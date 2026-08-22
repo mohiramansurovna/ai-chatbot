@@ -9,11 +9,12 @@ export class CreateMemoryUseCase {
     ) { }
     async execute(userId: number, content: string): Promise<void> {
         const { embedding, embeddingModel } = await this.embeddingsProvider.embed(content);
-        await this.userMemoriesRepository.create({
+        const userMemory = Core.UserMemories.UserMemory.create({
             userId,
             content,
             embedding,
-            embeddingModel
+            embeddingModel,
         });
+        await this.userMemoriesRepository.create(userMemory);
     }
 }

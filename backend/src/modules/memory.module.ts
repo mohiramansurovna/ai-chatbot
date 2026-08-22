@@ -1,7 +1,7 @@
 import { Application } from "@/application";
 import { Core } from "@/core";
+import { Infrastructure } from "@/infrastructure";
 import { Module } from "@nestjs/common";
-import { Repositories } from "../repositories";
 import { LlmModule } from "./llm.module";
 import { ConversationModule } from "./conversation.module";
 import { DatabaseModule } from "./database.module";
@@ -15,9 +15,12 @@ import { DatabaseModule } from "./database.module";
         Application.Memory.UserMemories.FindRelevantMemoriesUseCase,
         Application.Memory.UserMemories.ListMemoriesUseCase,
         Application.Memory.UserMemories.ValidateSessionMemories,
+
+        Infrastructure.Mappers.UserMemoriesMapper,
+        
         {
             provide: Core.UserMemories.USER_MEMORIES_REPOSITORY,
-            useClass: Repositories.UserMemoriesRepository,
+            useClass: Infrastructure.Repositories.UserMemoriesRepository,
         }
     ],
     exports: [

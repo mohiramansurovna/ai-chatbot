@@ -47,6 +47,11 @@ export class UserMemory implements IEntity {
             throw new UserMemoryAccessDeniedException();
         }
     }
+    public update(
+        props: Partial<Omit<UserMemoryProps, 'id' | 'createdAt' | 'updatedAt'>>
+    ): Partial<UserMemoryProps> {
+        return { id: this.id, ...props };
+    }
 }
 export interface UserMemoryWithSimilarity extends UserMemory {
     similarity: number;

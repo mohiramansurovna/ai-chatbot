@@ -1,17 +1,16 @@
 import { Module } from "@nestjs/common";
-import { DatabaseService } from "../database/database.service";
 import { ConfigModule } from "./config.module";
-import { UnitOfWork } from "../database/unit-of-work";
 import { Core } from "@/core";
+import { Infrastructure } from "@/infrastructure";
 
 @Module({
     imports: [ConfigModule],
-    providers: [DatabaseService,
+    providers: [Infrastructure.Database.DatabaseService,
         {
             provide: Core.Shared.UNIT_OF_WORK,
-            useClass: UnitOfWork,
+            useClass: Infrastructure.Database.UnitOfWork,
         }
     ],
-    exports: [DatabaseService, Core.Shared.UNIT_OF_WORK]
+    exports: [Infrastructure.Database.DatabaseService, Core.Shared.UNIT_OF_WORK]
 })
 export class DatabaseModule { }

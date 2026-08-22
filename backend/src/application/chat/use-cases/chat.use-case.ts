@@ -3,7 +3,6 @@ import { Core } from "@/core";
 import { Application } from "@/application";
 import { GetActiveKeyUseCase } from "@/application/identity/use-cases";
 import { FindRelevantMemoriesUseCase } from "@/application/memory/user-memory/use-cases";
-import { LlmRegistry } from "@/core/llm/llm.registry";
 import { AppendMessageUseCase } from "@/application/conversation/use-cases";
 type ChatUseCaseArgs = {
     sessionId: Core.Sessions.Session['id'];
@@ -16,10 +15,10 @@ type ChatUseCaseArgs = {
 export class ChatUseCase {
     constructor(
         @Inject(Core.Sessions.SESSIONS_REPOSITORY) private readonly sessionsRepository: Core.Sessions.ISessionsRepository,
-        private readonly getActiveKeyUseCase: GetActiveKeyUseCase,
-        private readonly llmRegistry: LlmRegistry,
-        private readonly findRelevantMemoriesUseCase: FindRelevantMemoriesUseCase,
+        @Inject(Core.Llm.LLM_REGISTRY) private readonly llmRegistry: Core.Llm.ILlmRegistry,
         @Inject(Core.Messages.MESSAGES_REPOSITORY) private readonly messagesRepository: Core.Messages.IMessagesRepository,
+        private readonly getActiveKeyUseCase: GetActiveKeyUseCase,
+        private readonly findRelevantMemoriesUseCase: FindRelevantMemoriesUseCase,
         private readonly appendMessageUseCase: AppendMessageUseCase
     ) { }
 

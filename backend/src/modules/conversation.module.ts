@@ -1,7 +1,7 @@
 import { Application } from "@/application";
 import { Core } from "@/core";
 import { Module } from "@nestjs/common";
-import { Repositories } from "../repositories";
+import { Infrastructure } from "@/infrastructure";
 import { DatabaseModule } from "./database.module";
 
 @Module({
@@ -13,13 +13,16 @@ import { DatabaseModule } from "./database.module";
         Application.Conversation.GetSessionUseCase,
         Application.Conversation.ListSessionsUseCase,
         Application.Conversation.RenameSessionUseCase,
+        
+        Infrastructure.Mappers.SessionsMapper,
+        Infrastructure.Mappers.MessagesMapper,
         {
             provide: Core.Sessions.SESSIONS_REPOSITORY,
-            useClass: Repositories.SessionsRepository
+            useClass: Infrastructure.Repositories.SessionsRepository
         },
         {
             provide: Core.Messages.MESSAGES_REPOSITORY,
-            useClass: Repositories.MessagesRepository
+            useClass: Infrastructure.Repositories.MessagesRepository
         }
     ],
     exports: [

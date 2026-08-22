@@ -17,10 +17,7 @@ export class EditMemoryUseCase {
         userMemory.verifyAccess(userId);
 
         const { embedding, embeddingModel } = await this.embeddingsProvider.embed(content);
-        await this.userMemoriesRepository.update(id, {
-            content,
-            embedding,
-            embeddingModel
-        });
+        
+        await this.userMemoriesRepository.update(userMemory.update({ content, embedding, embeddingModel }));
     }
 }

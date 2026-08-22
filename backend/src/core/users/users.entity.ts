@@ -40,4 +40,11 @@ export class User {
     static fromModel(props: UserProps): User {
         return new User(props);
     }
+
+    public update(props: Partial<Omit<UserProps, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>>):Partial<UserProps>{
+        return {
+            id: this.id,
+            ...props
+        }
+    };
 }

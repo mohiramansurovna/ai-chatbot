@@ -1,5 +1,5 @@
 import { Application } from "@/application";
-import { Repositories } from "../repositories";
+import { Infrastructure } from "@/infrastructure";
 import { Core } from "@/core";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "./config.module";
@@ -19,13 +19,16 @@ import { DatabaseModule } from "./database.module";
         Application.Identity.LoginUseCase,
         Application.Identity.RefreshUseCase,
 
+        Infrastructure.Mappers.UsersMapper,
+        Infrastructure.Mappers.ApiKeysMapper,
+        
         {
             provide: Core.Users.USERS_REPOSITORY,
-            useClass: Repositories.UsersRepository,
+            useClass: Infrastructure.Repositories.UsersRepository,
         },
         {
             provide: Core.ApiKeys.API_KEYS_REPOSITORY,
-            useClass: Repositories.ApiKeysRepository,
+            useClass: Infrastructure.Repositories.ApiKeysRepository,
         }
     ],
     exports: [Application.Identity.GetActiveKeyUseCase]
