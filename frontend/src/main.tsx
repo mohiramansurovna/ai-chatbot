@@ -1,18 +1,22 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router';
-import { router } from './router.tsx';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from './lib/react-query';
-import { ThemeProvider } from './components/theme-provider';
 import './index.css';
+import { RouterProvider } from '@tanstack/react-router';
+import { router, queryClient } from '@/app/router';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { AuthBootstrap } from './app/providers/AuthBootstrap';
+import { ThemeProvider } from './shared/lib/theme-provider';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
+      <ThemeProvider>
         <QueryClientProvider client={queryClient}>
-            <ThemeProvider>
+            <AuthBootstrap>
                 <RouterProvider router={router} />
-            </ThemeProvider>
+            </AuthBootstrap>
+            <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
+      </ThemeProvider>
     </StrictMode>
 );
