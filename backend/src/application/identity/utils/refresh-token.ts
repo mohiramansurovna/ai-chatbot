@@ -4,19 +4,19 @@ import { TokenPayload } from "../types";
 import { ExpiredTokenException, InvalidRefreshTokenException } from "../errors";
 
 export class RefreshToken {
-    static generate(userId: Core.Users.User['id'], authConfig: Core.Shared.IAuthConfig): Promise<string> {
+    static async generate(userId: Core.Users.User['id'], authConfig: Core.Shared.IAuthConfig): Promise<string> {
         const payload = {
             subject: userId
         }
-        return Shared.Lib.Jose.sign(payload, {
+        return await Shared.Lib.Jose.sign(payload, {
             secret: authConfig.refreshTokenSecret,
             expiresIn: authConfig.refreshTokenExpiresIn
         })
     }
 
-    static verify(token: string, authConfig: Core.Shared.IAuthConfig): Promise<TokenPayload> {
+    static async verify(token: string, authConfig: Core.Shared.IAuthConfig): Promise<TokenPayload> {
         try {
-            return Shared.Lib.Jose.verify<TokenPayload>(token, {
+            return await Shared.Lib.Jose.verify<TokenPayload>(token, {
                 secret: authConfig.refreshTokenSecret
             })
         } catch (err: unknown) {

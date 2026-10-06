@@ -25,8 +25,8 @@ export class ChatUseCase {
     async execute(args: ChatUseCaseArgs): Promise<Core.Messages.Message> {
         const { sessionId, userId, userMessage, providerName } = args;
 
-        const activeApiKey = await this.getActiveKeyUseCase.execute(userId, providerName);
         const llmProvider = this.llmRegistry.resolve(providerName);
+        const activeApiKey = await this.getActiveKeyUseCase.execute(userId, providerName, llmProvider);
         const activeLlm = new Core.Llm.ActiveLlm(llmProvider, activeApiKey);
 
         await this.appendMessageUseCase.execute(sessionId, userMessage, {

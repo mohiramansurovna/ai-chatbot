@@ -19,8 +19,7 @@ export class LoginUseCase {
     ) { }
     async execute(args:LoginArgs): Promise<Tokens> {
         const user = await this.usersRepository.findByEmail(args.email);
-        console.log("should be user here", user)
-
+        
         if (!user) {
             await Hasher.hash('password')
             throw new InvalidCredentialsException()

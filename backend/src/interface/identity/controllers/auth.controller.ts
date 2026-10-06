@@ -5,15 +5,15 @@ import {
     Post,
     Res,
     Req,
-    BadRequestException,
     UnauthorizedException,
 } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { LoginDto, RegisterBodyDto } from '../dtos';
-import { randomUUID } from 'crypto';
 import { Decorators } from '../../shared';
+import { RefreshTokenCookie } from '../utils/refresh-token.util';
+import { CSRFTokenCookie } from '../utils/csrf-token-cookie';
 
-@Controller('/auth')
+@Controller('api/auth')
 export class AuthController {
     constructor(
         private readonly registerUseCase: Application.Identity.RegisterUseCase,
@@ -33,58 +33,40 @@ export class AuthController {
     async login(@Body() body: LoginDto, @Res({ passthrough: true }) res: Response) {
         const { accessToken, refreshToken } = await this.loginUseCase.execute(body);
 
-        const csrfRandom = randomUUID();
-
-        res.cookie('refresh_token', refreshToken, {
-            maxAge: 1000 * 60 * 60 * 24 * 7,
-            httpOnly: true,
-            sameSite: 'none',
-            secure: true,
-        });
-
-        res.cookie('csrf_token', csrfRandom, {
-            maxAge: 1000 * 60 * 60 * 24 * 7,
-            sameSite: 'none',
-            secure: true,
-        });
+        RefreshTokenCookie.set(res, refreshToken);
+        CSRFTokenCookie.set(res);
 
         return { accessToken };
     }
 
     @Decorators.Public()
     @Post('refresh')
-    async refresh(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
-        const oldRefreshToken = req.cookies?.refresh_token;
-        const csrfToken = req.cookies?.csrf_token;
-        const csrfTokenHeader = req.headers['x-csrf-token'];
+    async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+        const oldRefreshToken = RefreshTokenCookie.get(req);
 
         if (!oldRefreshToken) {
-            throw new BadRequestException('Refresh token is not send');
-        }
-        if (!csrfToken || !csrfTokenHeader) {
-            throw new BadRequestException('invalid refresh token');
+            throw new UnauthorizedException('refresh token not provided');
         }
 
-        if (csrfToken !== csrfTokenHeader) {
-            throw new UnauthorizedException('invalid refresh token');
+        const isValid = CSRFTokenCookie.validate(req);
+
+        if (!isValid) {
+            throw new UnauthorizedException('invalid csrf-token');
         }
 
         const { accessToken, refreshToken } = await this.refreshUseCase.execute(oldRefreshToken);
 
-        const csrfRandom = randomUUID();
-
-        res.cookie('refresh_token', refreshToken, {
-            maxAge: 1000 * 60 * 60 * 24 * 7,
-            httpOnly: true,
-            sameSite: 'none',
-            secure: true,
-        });
-        res.cookie('csrf_token', csrfRandom, {
-            maxAge: 1000 * 60 * 60 * 24 * 7,
-            sameSite: 'none',
-            secure: true,
-        });
+        RefreshTokenCookie.set(res, refreshToken);
+        CSRFTokenCookie.set(res);
 
         return { accessToken };
+    }
+
+    @Post('logout')
+    async logout(@Res({ passthrough: true }) res: Response) {
+        RefreshTokenCookie.clear(res);
+        CSRFTokenCookie.clear(res);
+
+        return { message: 'successfully logged out' };
     }
 }

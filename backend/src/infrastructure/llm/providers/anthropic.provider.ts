@@ -22,4 +22,7 @@ export class AnthropicProvider implements LlmProvider {
         const textBlock = res.content.find((b) => b.type === 'text');
         return textBlock?.type === 'text' ? textBlock.text : '';
     }
+    isApiKeyActive(apiKey: string): Promise<boolean> {
+        return Promise.resolve(false)
+    }
 }

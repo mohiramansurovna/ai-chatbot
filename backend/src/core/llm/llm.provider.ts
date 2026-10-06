@@ -6,6 +6,7 @@ export type LlmProviderGenerateArgs = {
     messages?: LlmMessage[];
 }
 export interface LlmProvider {
-    generate(args:LlmProviderGenerateArgs): Promise<string>;
+    generate(args: LlmProviderGenerateArgs): Promise<string>;
+    isApiKeyActive(apiKey: string): Promise<boolean>;
 }
 

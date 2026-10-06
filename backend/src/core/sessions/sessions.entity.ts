@@ -36,7 +36,7 @@ export class Session {
             ...props,
             createdAt: new Date(),
             updatedAt: new Date(),
-            deletedAt: new Date(),
+            deletedAt: null,
         });
     }
 

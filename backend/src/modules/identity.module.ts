@@ -32,7 +32,7 @@ import { Interface } from "@/interface";
             useClass: Infrastructure.Repositories.ApiKeysRepository,
         }
     ],
-    controllers:[Interface.Identity.AuthController],
+    controllers:[Interface.Identity.AuthController, Interface.Identity.ApiKeysController],
     exports: [Application.Identity.GetActiveKeyUseCase]
 })
 export class IdentityModule { }

@@ -5,6 +5,7 @@ import { IdentityModule } from "./identity.module";
 import { LlmModule } from "./llm.module";
 import { MemoryModule } from "./memory.module";
 import { Interface } from "@/interface";
+import { SessionsController } from "@/interface/conversation/controllers/sessions.controller";
 
 @Module({
     imports: [
@@ -14,5 +15,6 @@ import { Interface } from "@/interface";
         MemoryModule
     ],
     providers: [Application.Chat.ChatUseCase],
+    controllers:[SessionsController]
 })
 export class ChatModule { }

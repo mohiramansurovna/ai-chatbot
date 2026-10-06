@@ -1,7 +1,7 @@
 import { LLM_PROVIDER_NAME, type LlmProviderName } from "@/core/llm/llm.types";
 import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 
-export class MessageDto {
+export class ChatDto {
     @IsNotEmpty()
     @IsString()
     message: string;

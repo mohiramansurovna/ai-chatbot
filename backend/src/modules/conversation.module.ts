@@ -31,6 +31,8 @@ import { DatabaseModule } from "./database.module";
         Application.Conversation.ListSessionsUseCase,
         Application.Conversation.CreateSessionUseCase,
         Application.Conversation.GetSessionUseCase,
+        Application.Conversation.RenameSessionUseCase,
+        Application.Conversation.DeleteSessionUseCase
         
     ]
 })
